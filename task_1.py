@@ -9,7 +9,7 @@ th = 1/5
 volumes = [100, 1000, 3000]
 
 # тестовое количество выборок каждого объема
-number_of_samples_tests = [10, 100, 1000]
+number_of_samples_tests = [50, 100, 1000]
 
 rng = np.random.default_rng()
 
@@ -21,6 +21,7 @@ for number_of_samples in number_of_samples_tests: # разное количес�
 
     x_avg = []
     x_disp = []
+    x_out_of_range = []
     for n in volumes: # разные объемы выборок
         th_diff = []
 
@@ -36,6 +37,9 @@ for number_of_samples in number_of_samples_tests: # разное количес�
         # выборочная дисперсия
         x_disp.append(1/n * sum(map(lambda x: (x-x_avg[-1])**2, th_diff)))
 
+        # отличаются больше чем на заданный порог
+        x_out_of_range.append(sum([1 if abs(val) > 0.01 else 0 for val in th_diff]))
+
         # построение гистограммы
         sp.hist(th_diff, alpha=0.7)
     
@@ -43,7 +47,10 @@ for number_of_samples in number_of_samples_tests: # разное количес�
     sp.legend(volumes, title="Объём")
     sp.set_xlabel("Смещение")
     sp.set_ylabel("Частота")
-    sp.text(0.5,-0.25, f"среднее выб-ное | выб-ная дисперсия\n{"\n".join([str(round(x_avg[i], 8)) + " | " + str(round(x_disp[i], 8)) for i in range(len(x_avg))])}", 
+    sp.text(0.5,-0.25, f"среднее выб-ное | выб-ная дисперсия | вылеты\n{"\n".join([str(round(x_avg[i], 8)) + " | " 
+                                                                                + str(round(x_disp[i], 8)) + " | " 
+                                                                                + str(x_out_of_range[i] / number_of_samples) 
+                                                                                for i in range(len(x_avg))])}", 
             size=8, ha="center", transform=sp.transAxes)
 
 plt.subplots_adjust(bottom=0.2)
