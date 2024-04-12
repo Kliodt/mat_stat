@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# биномиальное распределение
-m = 4
-th = 1 / 5
+# Геометрическое распределение
+th = -1
+thetas = []
 
 # объемы выборок
 volumes = [100, 1000, 3000]
@@ -19,6 +19,9 @@ for number_of_samples in number_of_samples_tests:  # разное количес
     graph_pos += 1
     sp = fig.add_subplot(1, len(number_of_samples_tests), graph_pos)
 
+    th = rng.random()
+    thetas.append(th)
+
     x_avg = []
     x_disp = []
     x_out_of_range = []
@@ -26,8 +29,8 @@ for number_of_samples in number_of_samples_tests:  # разное количес
         th_diff = []
 
         for i in range(number_of_samples):
-            seq = rng.binomial(m, th, size=n)
-            th_estimation = sum(seq) / (n * m)
+            seq = rng.geometric(th, size=n)
+            th_estimation = (n + 1) / (sum(seq) + 2)
             th_diff.append(th_estimation - th)
 
         # выборочные характеристики
